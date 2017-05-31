@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html data-ng-app="tutorApp">
+<head>
+    <meta charset="utf-8">
+	<meta name="referrer" content="no-referrer" />
+	<meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{title}}</title>
+    <!--<link href="/css/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.css?v=1.0.0" rel="stylesheet">-->
+    <!--<script src="/js/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.js?v=1.0.0"></script>-->
+    <link href="/css/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.css?v=1.0.0" integrity="{{sri "./public/css/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.css"}}" rel="stylesheet">
+    <script src="/js/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.js?v=1.0.0" integrity="{{sri "./public/js/dist/61c5d103-5fcc-425a-8c84-d4d0435899-cf751fc8e1-fc1d-4a14-a79b-4b54b20dd20a.min.js"}}"></script>
+</head>
+<body class="gray-bg bgr" onkeypress="return disableCtrlKeyCombination(event);" onkeydown="return disableCtrlKeyCombination(event);">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+
+                {{#if brute}}
+					<div>
+						<img src="/img/1f633.svg" alt="Oops!">
+					</div>
+                    <div class="widget style1 red-bg">
+						<div class="row vertical-align">		
+							
+                            <h2>Oops!</h2>
+                            <small>Se han realizado muchos intentos fallidos</small>
+                            <br>
+                            <small>{{time}}</small>
+                        </div>
+                    </div>
+                {{else}}
+                <div class="card card-container">
+                    <div>
+                        <img src="/build/img/icon_app-we.png" alt="">
+                    </div>
+                    <form class="m-t form-signin" role="form" action="/admin/login" method="post" id="login" name="login" autocomplete="off">
+                        <div class="hidden">
+                            <input type="password"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="username" name="username" class="form-control" placeholder="username" required="true" autocomplete="off" ng-model="user.username" data-ng-required="true" data-ng-minlength="4">
+                            <p class="label label-danger" ng-show="login.username.$invalid && login.username.$touched"> Debe de ingresar su nombre de usuario</p>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="true" autocomplete="off" data-ng-model="user.password" data-ng-required="true" data-ng-minlength="4">
+                            <p class="label label-danger" ng-show="login.password.$invalid && login.password.$touched"> La contrase&ntilde;a requiere de cuatro caracteres</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary block full-width m-b" ng-disabled="login.$invalid">Login</button>
+                    </form>
+                </div>
+                {{/if}}
+                {{#if warn}}
+                    <div class="widget style1 yellow-bg">
+                        <div class="row vertical-align">
+                            <h2>Advertencia!</h2>
+                            <small>El usuario o la contrase&ntilde;a <br>son incorrectos.</small>
+                        </div>
+                    </div>
+                {{/if}}
+                {{#if error}}
+                    <div class="widget style1 yellow-bg">
+                        <div class="row vertical-align">
+                            <div class="col-xs-9 text-center">
+                                <h2>Error</h2>
+                                <small>no de ha provisto los datos correctos</small>
+                            </div>
+                        </div>
+                    </div>
+                {{/if}}    
+            </div>
+        </div>
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">Tutor &copy;</p>
+        </div>
+    </footer>
+</body>
+</html>

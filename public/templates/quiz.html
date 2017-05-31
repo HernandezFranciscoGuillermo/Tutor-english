@@ -1,0 +1,81 @@
+﻿<div class="header">
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Quiz</h3>
+        </div>
+    </div>
+    <hr />
+</div>
+<div id="quiz">
+    <div class="row">
+        <div class="col-md-12"><h1 class="center">{{quiz.name}}</h1><hr /></div>
+    </div>
+    
+    <div ng-show="mode=='quiz'">
+        <div ng-repeat="question in filteredQuestions">
+            <div class="label label-info">Pregunta {{currentPage}} de {{totalItems}}.</div> <div class="label label-info">Esta pregunta vale {{10/totalItems}} puntos.</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>{{currentPage}}. <span ng-bind-html="question.Name"></span></h2>
+                </div>
+            </div>
+            <div class="row text-left options">
+                <div class="col-md-6" ng-repeat="option in question.Options">
+                    <div class="option">
+                        <label class="" for="{{option.Id}}">
+                            <input id="{{option.Id}}" type="checkbox" ng-model="option.Selected" ng-change="onSelect(question, option);" />
+                            {{option.Name}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="quizNav">
+            <div>
+                <button class="btn btn-default" ng-show="config.allowBack" ng-click="goTo(1);">Primera</button>
+                <button class="btn btn-default" ng-show="config.allowBack" ng-click="goTo(currentPage - 1);">Anterior</button>
+                <button class="btn btn-primary" ng-hide="currentPage == totalItems"                           ng-click="goTo(currentPage + 1);">Siguiente</button>
+                <button class="btn btn-default" ng-show="config.allowBack" ng-click="goTo(totalItems);">Ultima</button>
+            </div>
+            <br />
+            <pagination ng-show="config.showPager" direction-links="false" total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+        </div>
+    </div>
+    <div class="row review" ng-show="mode=='review'">
+        
+        <div class="col-sm-4" ng-repeat="question in questions">
+            <div ng-click="goTo($index + 1)" class="{{ isAnswered($index) == 'respondida'? 'answered': 'not-answered' }}">{{$index + 1}}. {{ isAnswered($index) }}</div>
+        </div>
+    </div>
+    <div class="result" ng-show="mode=='result'">
+        <h2>Resultados del Quiz</h2>
+        <div ng-repeat="question in questions">
+            <div class="result-question">
+                <h4>{{$index + 1}}. {{question.Name}}</h4>
+                <div class="row">
+                    <div class="col-md-6" ng-repeat="Option in question.Options">
+                        <div>
+                            <input id="{{Option.Id}}" type="checkbox" disabled="disabled" ng-model="Option.Selected" />
+                            {{Option.Name}}
+                        </div>
+                    </div>
+                </div>
+                <h4 class="alert {{ isCorrect(question) == 'correcta'? 'alert-success': 'alert-danger'}}">Su respuesta es {{isCorrect(question)}}.</h4>
+                <span>
+                    {{ getScore(question) }}
+                </span>
+            </div>
+        </div>
+        <!--<h4 class="alert alert-info text-center">Usted puede cerrar esta ventana.</h4>-->
+		<input type="button" class="btn alert-info input-block-level form-control" onclick="jshandler.onClick('HEllo');" value="Puede cerrar esta ventana presionando aqui"/>
+    </div>
+    <hr />
+    <div class="" ng-show="mode!='result'">
+        <span ng-show="mode=='review'" >   
+            <button class="btn btn-default" ng-click="mode = 'quiz'">Quiz</button> 
+        </span>
+        <button class="btn btn-default" ng-click="mode = 'review'">Revisi&oacute;n</button> 
+        <button class="btn btn-default" ng-click="onSubmit();">Enviar Quiz</button>
+    </div>
+</div>

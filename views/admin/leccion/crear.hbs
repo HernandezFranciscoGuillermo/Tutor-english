@@ -1,0 +1,149 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+    </div>
+    <div class="ibox-content">
+        <form method="post" class="form-horizontal" id="crearleccion">
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione el tema:</label>
+                <div class="col-sm-10">
+                    {{{temas 'form-control m-b'}}}
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Descripci&oacuten:</label>
+                <div class="col-sm-10">
+                    <input name="descripcion" type="text" class="form-control" id="descripcion" placeholder="alguna descripcion ..." maxlength="49">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-10" id="markdown">
+                    <textarea style="display:none;" name="markdown" class="form-control">
+Tema
+====
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+Aenean commodo ligula eget dolor. Aenean massa.
+Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+
+- Lorem
+- ipsum
+- dolor
+- sit
+
+![](http://static2.wikia.nocookie.net/__cb20130226215402/warior-cats-roleplaying-fanon/images/b/b1/Chibi_Cat_Base_4.png)
+</textarea>
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <button id="btnSaveSettings" class="btn btn-block btn-outline btn-primary ladda-button" type="button" data-style="contract">
+                        <strong>Save</strong></button>
+                </div>
+            </div>-->
+
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <input type="button" class="btn btn-block btn-primary ladda-button" id="guardar" value="Guardar"/>
+                    <!--<button type="submit" class="btn btn-primary" >guardar</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+
+        //$(window).attr('location','/admin/');
+
+        /*$("#temas").change(function(){
+            window.location='/admin/leccion/crear?id=' + this.value
+        });*/
+
+        var testEditor;
+
+        $(function() {
+            testEditor = editormd("markdown", {
+				
+                height  : 640,
+                width:'100%',
+                syncScrolling : "single",
+                path    : "/libs/editor.md/lib/",
+				emoji : true
+            });
+        });
+
+        $('#crearleccion').validate({
+            rules: {
+                descripcion:{
+                    required: true,
+                    minlength: 5,
+                    maxlength: 49
+                }
+            },
+
+            messages: {
+                descripcion: "Porfavor ingrese una descripcion"
+            }
+        });
+
+        $("#guardar").click(function() {
+            $('#crearleccion').valid();
+            var form = $('form').serialize();
+            $.post("/admin/leccion/crear", form, function (data, status, xhr) {
+                console.log(xhr.responseText);
+                if(xhr.responseText == 'ok'){
+
+                    swal({
+                        title: "Ok",
+                        text: "El formulario fue procesado correctamente",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#269FAA",
+                        confirmButtonText: "ok",
+                        closeOnConfirm: false,
+                        html: false
+
+                    }, function(){
+                        setTimeout(function(){
+                            $(window).attr('location','/admin/');
+                        }, 1500);
+                    });
+                }
+
+                if(xhr.responseText == 'error'){
+                    swal({
+                        title: "Error!",
+                        text: "No se han completado los datos",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+
+                if(xhr.responseText == 'fail'){
+                    swal({
+                        title: "Error!",
+                        text: "El servidor no pudo procesar la peticion",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+            }).done(function() {
+                //alert( "second success" );
+                $("form").trigger("reset");
+            }).fail(function() {
+                swal({
+                    title: "Error!",
+                    text: "Al procesar el formulario",
+                    type: "error",
+                    confirmButtonText: "ok"
+                });
+            }).always(function() {
+                //    alert( "finished" );
+            });
+        });
+    });
+</script>

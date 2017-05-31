@@ -1,0 +1,37 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <!---<h2>
+            2,160 results found for: <span class="text-navy">“Admin Theme”</span>
+        </h2>
+        <small>Request time  (0.23 seconds)</small>
+-->
+        <div class="search-form">
+            <form action="index.html" method="get">
+                <div class="input-group">
+                    <input type="text" placeholder="Buscar un tema" name="buscar" class="form-control input-lg">
+                    <div class="input-group-btn">
+                        <button class="btn btn-lg btn-primary" type="submit">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        {{table data.temas 'id tema categoria img creacion modificacion'}}
+        <div class="hr-line-dashed"></div>
+        <div class="text-center">
+            <div class="btn-group">
+                <button class="btn btn-white" type="button"><i class="fa fa-chevron-left"></i></button>
+                <button class="btn btn-white">1</button>
+                <button class="btn btn-white  active">2</button>
+                <button class="btn btn-white">3</button>
+                <button class="btn btn-white">4</button>
+                <button class="btn btn-white">5</button>
+                <button class="btn btn-white">6</button>
+                <button class="btn btn-white">7</button>
+                <button class="btn btn-white" type="button"><i class="fa fa-chevron-right"></i> </button>
+            </div>
+        </div>
+    </div>
+</div>

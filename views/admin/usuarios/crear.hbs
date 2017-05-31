@@ -1,0 +1,173 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+    </div>
+    <div class="ibox-content">
+        <form method="post" class="form-horizontal" id="crearusuarios" enctype="multipart/form-data">
+
+            <div class="form-group"><label class="col-sm-2 control-label">Nombre:</label>
+
+                <div class="col-sm-10"><input name="nombre" type="text" class="form-control" id="nombre" placeholder="algun nombre ..."></div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Apellido:</label>
+
+                <div class="col-sm-10"><input name="apellido" type="text" class="form-control" id="apellido" placeholder="algun apellido ..."></div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Nombre de usuario:</label>
+
+                <div class="col-sm-10"><input name="username" type="text" class="form-control" id="username" placeholder="algun nombre de usuario ..."></div>
+            </div>
+            
+            <div class="form-group"><label class="col-sm-2 control-label">Email:</label>
+                <div class="col-sm-10"><input name="email" type="email" class="form-control" id="email" placeholder="local@tutorapp.com"></div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Password:</label>
+
+                <div class="col-sm-10">
+
+                    <div class="input-group"><input name="password" type="text" class="form-control" id="password" value="{{password}}"><span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" id="hide"><i class="fa fa-eye-slash" aria-hidden="true"></i></button> </span></div>
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione el genero de usuario:</label>
+                <div class="col-sm-10">
+                    {{{genero 'form-control m-b'}}}
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione el tipo de usuario:</label>
+                <div class="col-sm-10">
+                    {{{userTypes 'form-control m-b'}}}
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione el estado del usuario:</label>
+                <div class="col-sm-10">
+                    {{{status 'form-control m-b'}}}
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione la imagen del usuario:</label>
+                <div class="col-sm-10">
+                    <div id="cover_dropzone" class="fileupload-buttonbar">
+                        <span class="btn fileinput-button">
+                                <span>Seleccionar archivo</span>
+                                <input id="location_cover" type="file" name="userimg" accept=".jpg, .png">
+                        </span>
+
+                        <div id="cover_progress" class="progress progress-mini" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar"></div>
+                        </div>
+
+                        <ul id="upload_cover_files"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <input type="button" class="btn btn-primary" id="guardar" value="Guardar"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#hide').on('click', function() {
+            var $inp = $('#password');
+            $inp.attr('type') === 'password' ?
+                    $inp.attr('type', 'text')
+                    : $inp.attr('type', 'password')
+        });
+
+        $('#crearusuarios').validate({
+            rules: {
+                nombre:"required",
+                apellido:"required",
+                username:"required",
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 5
+                }
+            },
+
+            messages: {
+                nombre: "Porfavor ingrese el nombre",
+                apellido:"Porfavor ingrese el apellido",
+                username: "Porfavor ingrese el username",
+                password: {
+                    required: "Porfavor ingrese una contraseña",
+                    minlength: "su contraseña debe de poseer más de 5 caracteres"
+                },
+                email: "Porfavor ingrese un email"
+            }
+        });
+
+        $("#guardar").click(function() {
+            $('#crearusuarios').valid();
+            var form = $('form').serialize();
+            $.post("/admin/usuarios/crear", form, function (data, status, xhr) {
+                console.log(xhr.responseText);
+                if(xhr.responseText == 'ok'){
+                    //swal("OK!", "Formulario procesado correctamente", "success");
+                    swal({
+                        title: "Ok",
+                        text: "El formulario fue procesado correctamente",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#269FAA",
+                        confirmButtonText: "ok",
+                        closeOnConfirm: false,
+                        html: false
+
+                    }, function(){
+                        setTimeout(function(){
+                            $(window).attr('location','/admin/');
+                        }, 1500);
+                    });
+                }
+
+                if(xhr.responseText == 'error'){
+                    swal({
+                        title: "Error!",
+                        text: "No se han completado los datos",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+
+                if(xhr.responseText == 'fail'){
+                    swal({
+                        title: "Error!",
+                        text: "El servidor no pudo procesar la peticion",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+            }).done(function() {
+                //alert( "second success" );
+                $("form").trigger("reset");
+            }).fail(function() {
+                swal({
+                    title: "Error!",
+                    text: "Al procesar el formulario",
+                    type: "error",
+                    confirmButtonText: "ok"
+                });
+            }).always(function() {
+                    //    alert( "finished" );
+            });
+        });
+    });
+</script>
+<script src="/js/file_upload.js"></script>

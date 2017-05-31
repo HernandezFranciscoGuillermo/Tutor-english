@@ -1,0 +1,138 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+    </div>
+    <div class="ibox-content">
+        <form method="post" class="form-horizontal" id="crearitem">
+
+            <div class="form-group"><label class="col-sm-2 control-label">Seleccione el examen:</label>
+                <div class="col-sm-10">
+                    {{{examen 'form-control m-b'}}}
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Pregunta:</label>
+                <div class="col-sm-10">
+                    <input name="pregunta" type="text" class="form-control" id="pregunta" placeholder="alguna pregunta ..." maxlength="49">
+                </div>
+            </div>
+
+            <div class="form-group"><label class="col-sm-2 control-label">Respuesta(s):</label>
+                <div class="field_wrapper col-sm-10">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger add_button"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </span>
+                        <input name="respuesta" type="text" class="form-control" id="respuesta" placeholder="alguna respuesta ...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <input type="button" class="btn btn-block btn-primary ladda-button" id="guardar" value="Guardar"/>
+                    <!--<button type="submit" class="btn btn-primary" >guardar</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var maxField  = 5; //Input fields increment limitation
+        var addButton = $('.add_button'); //Add button selector
+        var removeBtn = $('.remove_button');
+        var wrapper   = $('.field_wrapper'); //Input field wrapper
+        var fieldHTML = '<div><input type="text" name="respuesta" class="form-control" value=""/><button type="button" class="btn btn-info remove_button"><i class="fa fa-minus" aria-hidden="true"></i></button></div>'; //New input field html
+
+        var x = 1;
+        $(addButton).click(function(){
+            if(x < maxField){
+                x++;
+                $(wrapper).append(fieldHTML);
+            }
+        });
+        $(wrapper).on('click', '.remove_button', function(e){
+
+            //e.preventDefault();
+            $(this).parent('div').remove();
+            x--;
+        });
+
+        $('#crearitem').validate({
+            rules: {
+                pregunta:{
+                    required: true,
+                    minlength: 5,
+                    maxlength: 49
+                },
+                respuesta:{
+                    required: true,
+                    minlength: 1,
+                    maxlength: 49
+                }
+
+            },
+
+            messages: {
+                pregunta: "Porfavor ingrese una pregunta",
+                respuesta: "Porfavor ingrese una respuesta"
+            }
+        });
+
+        $("#guardar").click(function() {
+            $('#crearitem').valid();
+            var form = $('form').serialize();
+            $.post("/admin/itemexamen/crear", form, function (data, status, xhr) {
+                console.log(xhr.responseText);
+                if(xhr.responseText == 'ok'){
+                    swal({
+                        title: "Ok",
+                        text: "El formulario fue procesado correctamente",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#269FAA",
+                        confirmButtonText: "ok",
+                        closeOnConfirm: false,
+                        html: false
+
+                    }, function(){
+                        setTimeout(function(){
+                            $(window).attr('location','/admin/');
+                        }, 1500);
+                    });
+                }
+
+                if(xhr.responseText == 'error'){
+                    swal({
+                        title: "Error!",
+                        text: "No se han completado los datos",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+
+                if(xhr.responseText == 'fail'){
+                    swal({
+                        title: "Error!",
+                        text: "El servidor no pudo procesar la peticion",
+                        type: "error",
+                        confirmButtonText: "ok"
+                    });
+                }
+            }).done(function() {
+                //alert( "second success" );
+                $("form").trigger("reset");
+            }).fail(function() {
+                swal({
+                    title: "Error!",
+                    text: "Al procesar el formulario",
+                    type: "error",
+                    confirmButtonText: "ok"
+                });
+            }).always(function() {
+                //    alert( "finished" );
+            });
+        });
+    });
+</script>
